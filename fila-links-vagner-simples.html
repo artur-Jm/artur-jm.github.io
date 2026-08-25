@@ -2511,8 +2511,9 @@
 
   async function carregarEstado(){
     try {
-      const r = await window.storage.get(KEY, true);
-      estado = JSON.parse(r.value);
+      const salvo = localStorage.getItem(KEY);
+      if (!salvo) throw new Error('sem dados salvos ainda');
+      estado = JSON.parse(salvo);
     } catch (e) {
       estado = { produtos: PRODUTOS_EMBUTIDOS.map(p => ({ ...p, status: 'pendente', linkAfiliado: null })) };
       await salvarEstado();
@@ -2524,7 +2525,7 @@
 
   async function salvarEstado(){
     try {
-      await window.storage.set(KEY, JSON.stringify(estado), true);
+      localStorage.setItem(KEY, JSON.stringify(estado));
     } catch (e) {
       console.error('Erro ao salvar', e);
     }
